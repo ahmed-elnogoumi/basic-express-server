@@ -1,5 +1,5 @@
-function notFound(req, res, next){
-    res.status(404).send("404, not found");
-}
+const handle404 = (req, res) => {
+  res.status(404).send('Not Found');
+};
 
-module.exports = notFound;
+module.exports = handle404;

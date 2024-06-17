@@ -1,35 +1,26 @@
-'use strict'
-
 const express = require("express");
+const validator = require("../src/middleware/validator");
+const logger = require("../src/middleware/logger");
+const handle404 = require("../src/error-handlers/404");
+const handle500 = require("../src/error-handlers/500");
+
 const app = express();
-
-const logger = require('./middleware/logger'); 
-const validator = require('./middleware/validator');
-
-const notFound = require('./error-handlers/404');
-const serverError = require('./error-handlers/500');
 
 app.use(logger);
 
-app.get('/greet', validator, (req, res) => {
-    res.send(`Hello, ${req.query.name}`);
-});
-  
-app.get('/person', validator, (req, res) => {
-    res.json({ name: req.query.name });
-});
-  
-app.get('/', (req, res) => {
-    res.send('Hello World!');
+app.get("/person/:name", validator, (req, res, next) => {
+  const { name } = req.params;
+  res.status(200).json({ name });
 });
 
-app.use(notFound);
-app.use(serverError);
+app.use(handle404);
 
-module.exports = {
-    start(port) {
-      app.listen(port, () => {
-        console.log(`Server listening on port ${port}`);
-      });
-    }
+app.use(handle500);
+
+const start = (port) => {
+  app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  });
 };
+
+module.exports = { app, start };

@@ -1,9 +1,21 @@
 function validator(req, res, next) {
-    if (req.query.name) {
-      next();
-    } else {
-      res.status(400).send('Name is required in the query string');
-    }
+  let names = [
+    "Duke",
+    "Snake Eyes",
+    "Scarlett",
+    "Roadblock",
+    "Gung-Ho",
+    "Shipwreck",
+    "Lady Jaye",
+    "Flint",
+  ];
+  if (!names.includes(req.params.name)) {
+    const err = new Error("Try another name in G.I. Joe");
+    err.status = 500;
+    next(err);
+  } else {
+    next();
   }
-  
-  module.exports = validator;  
+}
+
+module.exports = validator;
